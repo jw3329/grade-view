@@ -1,5 +1,4 @@
-from grade_view import app
-
+from grade_view.setup import app
 
 @app.route('/')
 def index():
