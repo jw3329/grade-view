@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from grade_view.setup import app
+from datetime import datetime
 db = SQLAlchemy(app)
 
 class User(db.Model):
@@ -9,15 +10,14 @@ class User(db.Model):
     first_name = db.Column(db.String(30), unique=True, nullable=False)
     last_name = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(100), unique=True, nullable=False)
-    profile = db.Column(db.String(100), unique=True, nullable=False)
-    # major = db.relationship('MajorUserRelationship', backref='users', lazy=True)
+    profile = db.Column(db.String(100), unique=True, nullable=False, default='default.jpg')
+    profile = db.Column(db.String(100), unique=True, nullable=False, default=datetime.utcnow)
 
-    def __init__(self, email, first_name, last_name, password, profile):
+    def __init__(self, email, first_name, last_name, password):
         self.email = email
         self.first_name = first_name
         self.last_name = last_name
         self.password = password
-        self.profile = profile
 
     def __repr__(self):
         return f'<User {self.email}, {self.first_name}, {self.last_name}, {self.profile}>'
@@ -46,5 +46,3 @@ class MajorUserRelationship(db.Model):
         self.major_id = major_id
     def __repr__(self):
         return f'<MajorUserRelationship {self.user}, {self.major}>'
-
-db.create_all()
