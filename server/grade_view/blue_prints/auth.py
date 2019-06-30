@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_login import LoginManager
 from grade_view import db, app
-from grade_view.models import User, UserSchema
+from grade_view.models import User, UserSchema, Major, MajorSchema,MajorUserRelationship
 import re
 
 auth = Blueprint('auth', __name__)
@@ -20,6 +20,16 @@ def load_user(user_id):
 def login():
     return 'Login'
 
+@auth.route('/majors')
+def get_majors():
+    major_list = []
+    for major in Major.query.all():
+        major_list.append(major.major)
+    return jsonify({
+        'status': True,
+        'majors': major_list
+    })
+
 
 @auth.route('/signup', methods=['POST'])
 def signup():
@@ -36,6 +46,10 @@ def signup():
         user = User(content['email'], content['firstname'],
                     content['lastname'], content['password'])
         db.session.add(user)
+        db.session.commit()
+        # put into MajorUserRelationship object to add in database
+        for major in content['majors']:
+            db.session.add(MajorUserRelationship(user.id,Major.query.filter_by(major=major).first().id))
         db.session.commit()
 
         return jsonify({'status': True, 'user': UserSchema().dump(user).data})
