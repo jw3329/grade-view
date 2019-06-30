@@ -1,4 +1,4 @@
-from flask import Blueprint, request, abort, jsonify
+from flask import Blueprint, request, jsonify
 from flask_login import LoginManager
 from grade_view import db, app
 from grade_view.models import User, UserSchema
