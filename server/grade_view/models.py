@@ -3,11 +3,12 @@ from grade_view import app, db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_marshmallow import Marshmallow
+from flask_login import UserMixin
 
 ma = Marshmallow(app)
 
 
-class User(db.Model):
+class User(db.Model,UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(50), unique=True, nullable=False)
