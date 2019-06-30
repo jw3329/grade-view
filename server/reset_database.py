@@ -1,4 +1,4 @@
-from grade_view.models import db
+from grade_view import db
 from grade_view.setup_database import database_setup
 import logging
 
