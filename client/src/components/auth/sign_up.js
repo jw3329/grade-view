@@ -45,7 +45,7 @@ const SignUp = ({ history }) => {
                 setErrorMessage(message);
             } else {
                 // redirect to home page
-                history.push('/');
+                history.push('/signin');
             }
         } catch (error) {
             console.log(error);
