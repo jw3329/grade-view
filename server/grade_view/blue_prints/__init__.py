@@ -1,1 +1,1 @@
-import grade_view.blue_prints.auth
+from grade_view.blue_prints import auth,settings

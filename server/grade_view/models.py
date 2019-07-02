@@ -18,6 +18,11 @@ class User(db.Model,UserMixin):
     profile = db.Column(db.String(100),
                         nullable=False,
                         default='default.jpg')
+    bio = db.Column(db.Text,nullable=False, default='')
+    url = db.Column(db.String(50),nullable=False, default='')
+    company = db.Column(db.String(30), nullable=False, default='')
+    location = db.Column(db.String(30), nullable=False, default='')
+
     created_date = db.Column(db.DateTime,
                              nullable=False,
                              default=datetime.utcnow)
@@ -40,8 +45,7 @@ class User(db.Model,UserMixin):
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'email', 'first_name', 'last_name', 'profile',
-                  'created_date')
+        fields = ('id', 'email', 'first_name', 'last_name', 'profile', 'bio', 'url', 'company', 'location','created_date')
 
 
 class Major(db.Model):
