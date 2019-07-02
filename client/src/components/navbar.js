@@ -24,7 +24,10 @@ const Navbar = () => {
                 <div className="form-inline my-2 my-lg-0" >
                     {
                         user ? (
-                            <Link onClick={handleSignOut} to='#' className="navbar-brand">Sign out</Link>
+                            <Fragment>
+                                <Link onClick={handleSignOut} to='#' className="navbar-brand">Sign out</Link>
+                                <Link className="navbar-brand" to='/settings/profile'>Settings</Link>
+                            </Fragment>
                         ) : (
                                 <Fragment>
                                     <Link className="navbar-brand" to="/signup">Sign up</Link>

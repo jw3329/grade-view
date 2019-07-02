@@ -44,7 +44,7 @@ const SignIn = ({ history }) => {
     }
 
     return (
-        <form onChange={handleChange} onSubmit={handleSubmit} className="mt-5 mx-auto col-sm-6">
+        <form onChange={handleChange} onSubmit={handleSubmit} className="mx-auto col-sm-6">
             <div className="form-group">
                 <label htmlFor="email">Email address</label>
                 <input type="email" className="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" required />
