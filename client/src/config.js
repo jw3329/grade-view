@@ -1,3 +1,5 @@
-export const SERVER = 'http://localhost';
+const SERVER_DOMAIN = 'http://localhost';
 
-export const PORT = 5000;
+const PORT = 5000;
+
+export const SERVER = `${SERVER_DOMAIN}:${PORT}`;
