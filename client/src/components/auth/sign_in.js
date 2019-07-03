@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import { SERVER, PORT } from '../../config';
+import { SERVER } from '../../config';
 import AuthContext from '../../contexts/auth_context';
 
 const SignIn = ({ history }) => {
@@ -19,7 +19,7 @@ const SignIn = ({ history }) => {
         const { email, password } = form;
         setErrorMessage('');
         try {
-            const { status, message, user } = (await axios.post(`${SERVER}:${PORT}/auth/signin`, {
+            const { status, message, user } = (await axios.post(`${SERVER}/auth/signin`, {
                 email,
                 password,
             })).data;

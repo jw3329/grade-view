@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { SERVER, PORT } from '../../config';
+import { SERVER } from '../../config';
 
 const SignUp = ({ history }) => {
 
@@ -13,11 +13,12 @@ const SignUp = ({ history }) => {
         majors: []
     });
 
-    const [errorMessage, setErrorMessage] = useState('');
+    const [message, setMessage] = useState('');
+    const [status, setStatus] = useState(null);
     const [majors, setMajors] = useState([]);
 
     useEffect(() => {
-        axios.get(`${SERVER}:${PORT}/auth/majors`)
+        axios.get(`${SERVER}/auth/majors`)
             .then(res => res.data)
             .then(({ status, majors }) => {
                 if (!status) throw new Error('Something wrong getting majors');
@@ -31,9 +32,9 @@ const SignUp = ({ history }) => {
     const handleSubmit = async e => {
         e.preventDefault();
         const { email, firstName, lastName, password, confirmPassword, majors } = form;
-        setErrorMessage('');
+        setMessage('');
         try {
-            const { status, message } = (await axios.post(`${SERVER}:${PORT}/auth/signup`, {
+            const { status, message } = (await axios.post(`${SERVER}/auth/signup`, {
                 email,
                 firstname: firstName,
                 lastname: lastName,
@@ -41,12 +42,8 @@ const SignUp = ({ history }) => {
                 confirm_password: confirmPassword,
                 majors
             })).data;
-            if (!status) {
-                setErrorMessage(message);
-            } else {
-                // redirect to home page
-                history.push('/signin');
-            }
+            setStatus(status);
+            setMessage(message);
         } catch (error) {
             console.log(error);
         }
@@ -64,7 +61,7 @@ const SignUp = ({ history }) => {
                 majors: [...e.target.options].filter(option => option.selected).map(option => option.value)
             });
         }
-        setErrorMessage('');
+        setMessage('');
     }
 
     return (
@@ -72,14 +69,6 @@ const SignUp = ({ history }) => {
             <div className="form-group">
                 <label htmlFor="email">Email address</label>
                 <input type="email" className="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" required />
-            </div>
-            <div className="form-group">
-                <label htmlFor="firstName">First name</label>
-                <input type="text" className="form-control" id="firstName" placeholder="Enter first name" required />
-            </div>
-            <div className="form-group">
-                <label htmlFor="lastName">Last name</label>
-                <input type="text" className="form-control" id="lastName" placeholder="Enter last name" required />
             </div>
             <div className="form-group">
                 <label htmlFor="password">Password</label>
@@ -90,14 +79,22 @@ const SignUp = ({ history }) => {
                 <input type="password" className="form-control" id="confirmPassword" placeholder="Confirm password" required />
             </div>
             <div className="form-group">
+                <label htmlFor="firstName">First name</label>
+                <input type="text" className="form-control" id="firstName" placeholder="Enter first name" required />
+            </div>
+            <div className="form-group">
+                <label htmlFor="lastName">Last name</label>
+                <input type="text" className="form-control" id="lastName" placeholder="Enter last name" required />
+            </div>
+            <div className="form-group">
                 <label htmlFor="majors">Select majors</label>
                 <select multiple className="form-control" id="majors">
                     {majors.map((major, index) => <option key={index}>{major}</option>)}
                 </select>
             </div>
             {
-                errorMessage && (<div className="alert alert-danger" role="alert">
-                    {errorMessage}
+                message && (<div className={"alert alert-" + (status ? 'success' : 'danger')} role="alert">
+                    {message}
                 </div>)
             }
             <button type="submit" className="btn btn-primary">Submit</button>

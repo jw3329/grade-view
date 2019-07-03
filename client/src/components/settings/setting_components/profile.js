@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import AuthContext from '../../../contexts/auth_context';
 import axios from 'axios';
-import { SERVER, PORT } from '../../../config';
+import { SERVER } from '../../../config';
 
 const Profile = () => {
 
@@ -12,8 +12,11 @@ const Profile = () => {
 
     const handleSubmit = async e => {
         e.preventDefault();
+        console.log(e.target.profile_picture.files)
+        const formData = new FormData();
+        formData.append('profile_picture', e.target.profile_picture.files[0]);
         try {
-            const { status, message, user } = (await axios.put(`${SERVER}:${PORT}/settings/profile`, userData)).data;
+            const { status, message, user } = (await axios.put(`${SERVER}/settings/profile`, { ...userData, profile_image: formData })).data;
             setStatus(status);
             setMessage(message);
             setUser(user);
@@ -24,6 +27,7 @@ const Profile = () => {
     }
 
     const handleChange = e => {
+        // console.log(e.target.files);
         setUserData({
             ...userData,
             [e.target.id]: e.target.value
@@ -31,9 +35,9 @@ const Profile = () => {
     }
 
     return (
-        <div className="row">
-            <div className="col-sm-7">
-                <form onSubmit={handleSubmit} onChange={handleChange}>
+        <form onSubmit={handleSubmit} onChange={handleChange}>
+            <div className="row">
+                <div className="col-sm-7">
                     <div className="form-group">
                         <label htmlFor="first_name">First name</label>
                         <input type="text" className="form-control" id="first_name" placeholder="First name" required defaultValue={userData.first_name} />
@@ -64,12 +68,16 @@ const Profile = () => {
                         )
                     }
                     <button type="submit" className="btn btn-primary">Submit</button>
-                </form>
+                </div>
+                <div className="ml-2 col-sm-4">
+                    <img src={user.profile} alt="" />
+                    <div className="custom-file">
+                        <input type="file" className="custom-file-input" id="profile_picture" />
+                        <label className="custom-file-label" htmlFor="profile_picture">Upload picture</label>
+                    </div>
+                </div>
             </div>
-            <div className="ml-2 col-sm-4">
-                Profile picture here
-            </div>
-        </div>
+        </form>
     );
 }
 
