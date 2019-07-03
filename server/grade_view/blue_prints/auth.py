@@ -83,7 +83,7 @@ def signup():
                 user.id, Major.query.filter_by(major=major).first().id))
         db.session.commit()
 
-        return jsonify({'status': True, 'user': UserSchema().dump(user).data})
+        return jsonify({'status': True, 'user': UserSchema().dump(user).data, 'message': 'Successfully created account'})
     except Exception as e:
         return jsonify({'status': False, 'message': str(e)})
 

@@ -9,15 +9,16 @@ settings = Blueprint('settings', __name__)
 @login_required
 def profile():
     profile_update_data = request.get_json()
-    user = User.query.get(current_user.id)
+    # print(profile_update_data)
+    # user = User.query.get(current_user.id)
     try:
-        user.first_name = profile_update_data['first_name']
-        user.last_name = profile_update_data['last_name']
-        user.bio = profile_update_data['bio']
-        user.url = profile_update_data['url']
-        user.company = profile_update_data['company']
-        user.location = profile_update_data['location']
-        user.profile = profile_update_data['profile']
+        current_user.first_name = profile_update_data['first_name']
+        current_user.last_name = profile_update_data['last_name']
+        current_user.bio = profile_update_data['bio']
+        current_user.url = profile_update_data['url']
+        current_user.company = profile_update_data['company']
+        current_user.location = profile_update_data['location']
+        current_user.profile = profile_update_data['profile']
         db.session.commit()
         status = True
         message = 'Successfully updated'
@@ -27,7 +28,7 @@ def profile():
     return jsonify({
         'status':status,
         'message':message,
-        'user': UserSchema().dump(user).data
+        'user': UserSchema().dump(current_user).data
     })
 
 app.register_blueprint(settings, url_prefix='/settings')
