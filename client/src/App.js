@@ -6,8 +6,9 @@ import { SignIn, SignUp } from './components/auth';
 import NoMatch from './components/nomatch';
 import AuthContext from './contexts/auth_context';
 import axios from 'axios';
-import { PORT, SERVER } from './config';
+import { SERVER } from './config';
 import Settings from './components/settings/settings';
+import RegisterGPA from './components/register_gpa';
 
 function App() {
 
@@ -17,7 +18,7 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        const { status, user } = (await axios.get(`${SERVER}:${PORT}/auth/authenticated`)).data;
+        const { status, user } = (await axios.get(`${SERVER}/auth/authenticated`)).data;
         if (status) {
           setUser(user);
         }
@@ -40,6 +41,7 @@ function App() {
               <Route exact path='/signin' component={SignIn} />
               <Route exact path='/signup' component={SignUp} />
               <Route path='/settings' component={Settings} />
+              <Route path='/register/gpa' component={RegisterGPA} />
               <Route component={NoMatch} />
             </Switch>
           </div>
