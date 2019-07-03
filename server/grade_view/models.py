@@ -17,7 +17,7 @@ class User(db.Model,UserMixin):
     hashed_password = db.Column(db.String(100), nullable=False)
     profile = db.Column(db.String(100),
                         nullable=False,
-                        default='default.jpg')
+                        default='')
     bio = db.Column(db.Text,nullable=False, default='')
     url = db.Column(db.String(50),nullable=False, default='')
     company = db.Column(db.String(30), nullable=False, default='')
@@ -80,3 +80,34 @@ class MajorUserRelationship(db.Model):
 
     def __repr__(self):
         return f'<MajorUserRelationship {self.user}, {self.major}>'
+
+class Course(db.Model):
+    __tablename__ = 'courses'
+    id = db.Column(db.Integer, primary_key=True)
+    major_id = db.Column(db.Integer, db.ForeignKey('majors.id'), nullable=False)
+    major = db.relationship('Major', backref='courses', lazy=True)
+    course_number = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, major_id, course_number):
+        self.major_id = major_id
+        self.course_number = course_number
+
+    def __repr__(self):
+        return f'<Course {self.major}, {self.course_number}>'
+
+class GPA(db.Model):
+    __tablename__ = 'gpas'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user = db.relationship('User',backref='gpas', lazy=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
+    course = db.relationship('Course',backref='gpas', lazy=True)
+    gpa = db.Column(db.Float, nullable=False)
+
+    def __init__(self, user_id, course_id, gpa):
+        self.user_id = user_id
+        self.course_id = course_id
+        self.gpa = gpa
+
+    def __repr__(self):
+        return f'<GPA {self.user_id}, {self.course_id}, {self.gpa}>'
