@@ -15,7 +15,7 @@ class User(db.Model,UserMixin):
     first_name = db.Column(db.String(30), nullable=False)
     last_name = db.Column(db.String(30), nullable=False)
     hashed_password = db.Column(db.String(100), nullable=False)
-    profile = db.Column(db.String(100),
+    profile_image = db.Column(db.String(100),
                         nullable=False,
                         default='')
     bio = db.Column(db.Text,nullable=False, default='')
@@ -40,12 +40,12 @@ class User(db.Model,UserMixin):
         return check_password_hash(self.hashed_password, password)
 
     def __repr__(self):
-        return f'<User {self.email}, {self.first_name}, {self.last_name}, {self.profile}>'
+        return f'<User {self.email}, {self.first_name}, {self.last_name}, {self.profile_image}>'
 
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'email', 'first_name', 'last_name', 'profile', 'bio', 'url', 'company', 'location','created_date')
+        fields = ('id', 'email', 'first_name', 'last_name', 'profile_image', 'bio', 'url', 'company', 'location','created_date')
 
 
 class Major(db.Model):
