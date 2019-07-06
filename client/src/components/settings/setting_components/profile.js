@@ -6,31 +6,44 @@ import { SERVER } from '../../../config';
 const Profile = () => {
 
     const { user, setUser } = useContext(AuthContext);
-    const [userData, setUserData] = useState(user);
+    const [userData, setUserData] = useState({ ...user, profile_image: `${SERVER}/settings/profile_image` });
     const [message, setMessage] = useState('');
     const [status, setStatus] = useState(null);
 
     const handleSubmit = async e => {
         e.preventDefault();
-        console.log(e.target.profile_picture.files)
+        setMessage('');
+        setStatus(null);
+        console.log(e.target.profile_image.files[0])
         const formData = new FormData();
-        formData.append('profile_picture', e.target.profile_picture.files[0]);
+        formData.append('profile_image', e.target.profile_image.files[0]);
         try {
-            const { status, message, user } = (await axios.put(`${SERVER}/settings/profile`, { ...userData, profile_image: formData })).data;
-            setStatus(status);
-            setMessage(message);
+            const profileData = (await axios.put(`${SERVER}/settings/profile`, userData)).data;
+            if (!profileData.status) throw new Error(profileData.message);
+            await axios.post(`${SERVER}/settings/profile_image`, formData)
+            // if (!profileImageData.status) throw new Error(profileImageData.message);
             setUser(user);
-            if (!status) throw new Error(message);
+            setStatus(true)
+            setMessage(profileData.message);
         } catch (error) {
+            setStatus(false);
+            setMessage(error.message);
             console.log(error);
         }
     }
 
     const handleChange = e => {
         // console.log(e.target.files);
+        let value = null;
+        if (e.target.id === 'profile_image') {
+            value = e.target.files.length > 0 ? value = URL.createObjectURL(e.target.files[0]) : '';
+            console.log(value)
+        } else {
+            value = e.target.value;
+        }
         setUserData({
             ...userData,
-            [e.target.id]: e.target.value
+            [e.target.id]: value
         });
     }
 
@@ -70,10 +83,10 @@ const Profile = () => {
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </div>
                 <div className="ml-2 col-sm-4">
-                    <img src={user.profile} alt="" />
-                    <div className="custom-file">
-                        <input type="file" className="custom-file-input" id="profile_picture" />
-                        <label className="custom-file-label" htmlFor="profile_picture">Upload picture</label>
+                    <img src={userData.profile_image} alt="" className="w-100" />
+                    <div className="form-group">
+                        <label htmlFor="profile_image">Upload profile picture</label>
+                        <input type="file" className="form-control-file" id="profile_image" accept="image/png, image/jpg" />
                     </div>
                 </div>
             </div>
