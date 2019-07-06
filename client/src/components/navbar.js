@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import AuthContext from '../contexts/auth_context';
 import Axios from 'axios';
 import { SERVER } from '../config';
+import { Redirect } from 'react-router-dom';
 
 const Navbar = () => {
 
@@ -12,6 +13,7 @@ const Navbar = () => {
         try {
             const { status } = (await Axios.get(`${SERVER}/auth/signout`)).data
             if (status) setUser(null);
+            return <Redirect to='/' />;
         } catch (error) {
             console.log(error);
         }
