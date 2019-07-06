@@ -1,3 +1,4 @@
 .vscode
 Pipfile.lock
 **/__pycache__
+grade_view/database/grade_view.db
