@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { SERVER } from '../../config';
 
-const SignUp = ({ history }) => {
+const SignUp = () => {
 
     const [form, setForm] = useState({
         email: '',
