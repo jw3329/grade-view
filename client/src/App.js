@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from './components/navbar';
-import Home from './components/home';
+import Home from './components/home/';
 import { SignIn, SignUp } from './components/auth';
 import NoMatch from './components/nomatch';
 import AuthContext from './contexts/auth_context';
