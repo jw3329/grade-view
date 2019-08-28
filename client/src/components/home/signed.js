@@ -21,7 +21,7 @@ const Signed = () => {
             <div className="card-body">
                 <h5 className="card-title">{course}</h5>
                 <h6 className="card-subtitle mb-2 text-muted">Course number: {courseNumber}</h6>
-                <p className="card-text">GPA: {gpa}</p>
+                <p className="card-text">GPA: {Number(gpa).toFixed(2)} / 4.00</p>
             </div>
         </div>
     )
