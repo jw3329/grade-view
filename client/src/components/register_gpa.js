@@ -11,7 +11,7 @@ const RegisterGPA = () => {
     const [registerData, setRegisterData] = useState({
         course: '',
         course_number: '',
-        gpa: ''
+        gpa: 'A+/A'
     });
 
     useEffect(() => {
@@ -60,8 +60,21 @@ const RegisterGPA = () => {
                 <input type="number" className="form-control" id="course_number" placeholder="Enter course number" min="100" max="999" required />
             </div>
             <div className="form-group">
-                <label htmlFor="gpa">GPA</label>
-                <input type="number" step="0.01" className="form-control" id="gpa" placeholder="Enter GPA" min="0.00" max="4.00" required />
+                <label htmlFor="gpa">Grade</label>
+                <select id="gpa" className="form-control form-control-sm">
+                    <option>A+/A</option>
+                    <option>A-</option>
+                    <option>B+</option>
+                    <option>B</option>
+                    <option>B-</option>
+                    <option>C+</option>
+                    <option>C</option>
+                    <option>C-</option>
+                    <option>D+</option>
+                    <option>D</option>
+                    <option>D-</option>
+                    <option>F</option>
+                </select>
             </div>
             {
                 message && (<div className={"alert alert-" + (status ? 'success' : 'danger')} role="alert">
