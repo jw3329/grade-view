@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { SERVER } from '../config';
 import axios from 'axios';
 
-const RegisterGPA = ({ history }) => {
+const RegisterGPA = () => {
 
 
     const [majors, setMajors] = useState([]);
@@ -45,7 +45,6 @@ const RegisterGPA = ({ history }) => {
             ...registerData,
             [e.target.id]: e.target.value
         });
-        console.log(e.target.value)
     }
 
     return (
@@ -58,11 +57,11 @@ const RegisterGPA = ({ history }) => {
             </div>
             <div className="form-group">
                 <label htmlFor="course_number">Course number</label>
-                <input type="text" className="form-control" id="course_number" placeholder="Enter course number" required />
+                <input type="number" className="form-control" id="course_number" placeholder="Enter course number" min="100" max="999" required />
             </div>
             <div className="form-group">
                 <label htmlFor="gpa">GPA</label>
-                <input type="text" className="form-control" id="gpa" placeholder="Enter GPA" required />
+                <input type="number" step="0.01" className="form-control" id="gpa" placeholder="Enter GPA" min="0.00" max="4.00" required />
             </div>
             {
                 message && (<div className={"alert alert-" + (status ? 'success' : 'danger')} role="alert">
