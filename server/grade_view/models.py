@@ -111,3 +111,32 @@ class GPA(db.Model):
 
     def __repr__(self):
         return f'<GPA {self.user_id}, {self.course_id}, {self.gpa}>'
+
+
+class Professor(db.Model):
+    __tablename__ = 'professors'
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(30), nullable=False)
+    last_name = db.Column(db.String(30), nullable=False)
+
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
+
+    def __repr__(self):
+        return f'<Professor {self.first_name}, {self.last_name}>'
+
+class ProfessorCourses(db.Model):
+    __tablename__ = 'professor_courses'
+    id = db.Column(db.Integer, primary_key=True)
+    professor_id = db.Column(db.Integer, db.ForeignKey('professors.id'), nullable=False)
+    professor = db.relationship('Professor', backref='professor_courses',lazy=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
+    course = db.relationship('Course', backref='professor_courses',lazy=True)
+
+    def __init__(self, professor_id, course_id):
+        self.professor_id = professor_id
+        self.course_id = course_id
+
+    def __repr__(self):
+        return f'<ProfessorCourses {self.professor_id}, {self.course_id}>'
