@@ -44,7 +44,7 @@ def profile_image():
     if request.method == 'GET':
         profile_image_filename = current_user.profile_image
         if not profile_image_filename:
-            return None
+            return ''
         sending_file = os.path.abspath(f'{target}/{profile_image_filename}')
         return send_file(sending_file,mimetype='image/jpg')
     elif request.method == 'POST':

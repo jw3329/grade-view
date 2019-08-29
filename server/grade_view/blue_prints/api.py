@@ -34,6 +34,7 @@ def api_find_user():
         if request.method == 'POST':
             username = request.get_json()['username']
             user = User.query.filter_by(username=username).first()
+            if not user: raise Exception('No user found')
             json = {
                 'status': True,
                 'user': UserSchema().dump(user).data
