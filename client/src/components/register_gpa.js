@@ -41,6 +41,7 @@ const RegisterGPA = () => {
     }
 
     const handleChange = e => {
+        setMessage('');
         setRegisterData({
             ...registerData,
             [e.target.id]: e.target.value
