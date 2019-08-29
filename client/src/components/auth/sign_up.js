@@ -6,8 +6,7 @@ const SignUp = () => {
 
     const [form, setForm] = useState({
         email: '',
-        firstName: '',
-        lastName: '',
+        username: '',
         password: '',
         confirmPassword: '',
         majors: []
@@ -31,13 +30,12 @@ const SignUp = () => {
 
     const handleSubmit = async e => {
         e.preventDefault();
-        const { email, firstName, lastName, password, confirmPassword, majors } = form;
+        const { email, username, password, confirmPassword, majors } = form;
         setMessage('');
         try {
             const { status, message } = (await axios.post(`${SERVER}/auth/signup`, {
                 email,
-                firstname: firstName,
-                lastname: lastName,
+                username,
                 password,
                 confirm_password: confirmPassword,
                 majors
@@ -71,20 +69,16 @@ const SignUp = () => {
                 <input type="email" className="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" required />
             </div>
             <div className="form-group">
+                <label htmlFor="username">Username</label>
+                <input type="text" className="form-control" id="username" placeholder="Enter username" required />
+            </div>
+            <div className="form-group">
                 <label htmlFor="password">Password</label>
                 <input type="password" className="form-control" id="password" placeholder="Password" required />
             </div>
             <div className="form-group">
                 <label htmlFor="confirmPassword">Confirm password</label>
                 <input type="password" className="form-control" id="confirmPassword" placeholder="Confirm password" required />
-            </div>
-            <div className="form-group">
-                <label htmlFor="firstName">First name</label>
-                <input type="text" className="form-control" id="firstName" placeholder="Enter first name" required />
-            </div>
-            <div className="form-group">
-                <label htmlFor="lastName">Last name</label>
-                <input type="text" className="form-control" id="lastName" placeholder="Enter last name" required />
             </div>
             <div className="form-group">
                 <label htmlFor="majors">Select majors</label>
