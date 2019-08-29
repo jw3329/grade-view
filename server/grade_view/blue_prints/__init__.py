@@ -1,1 +1,1 @@
-from grade_view.blue_prints import auth,settings, register, uploads
+from grade_view.blue_prints import auth,settings, register, uploads, api

@@ -73,8 +73,7 @@ def signup():
             raise Exception('Not a valid email form')
         if User.query.filter_by(email=content['email']).first():
             raise Exception('Email already exists')
-        user = User(content['email'], content['firstname'],
-                    content['lastname'], content['password'])
+        user = User(content['email'], content['username'], content['password'])
         db.session.add(user)
         db.session.commit()
         # put into MajorUserRelationship object to add in database
