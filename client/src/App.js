@@ -9,6 +9,7 @@ import axios from 'axios';
 import { SERVER } from './config';
 import Settings from './components/settings/settings';
 import RegisterGPA from './components/register_gpa';
+import Dashboard from './components/home/dashboard';
 
 function App() {
 
@@ -42,6 +43,7 @@ function App() {
               <Route exact path='/signup' component={SignUp} />
               <Route path='/settings' component={Settings} />
               <Route path='/register/gpa' component={RegisterGPA} />
+              <Route path='/:username' component={Dashboard} />
               <Route component={NoMatch} />
             </Switch>
           </div>
