@@ -2,32 +2,34 @@ import React, { useEffect, useContext, useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from './components/navbar';
 import Home from './components/home/';
-import { SignIn, SignUp } from './components/auth';
 import NoMatch from './components/nomatch';
 import AuthContext from './contexts/auth_context';
 import axios from 'axios';
 import { SERVER } from './config';
-import Settings from './components/settings/settings';
-import RegisterGPA from './components/register_gpa';
-import Dashboard from './components/home/dashboard';
+import SignedRoutes from './routes/signed_routes';
+import UnsignedRoutes from './routes/unsigned_routes';
 
 function App() {
 
-  const { setUser } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     (async () => {
       try {
         const { status, user } = (await axios.get(`${SERVER}/auth/authenticated`)).data;
-        if (status) {
-          setUser(user);
+        if (isMounted) {
+          if (status) {
+            setUser(user);
+          }
+          setLoaded(true);
         }
-        setLoaded(true);
       } catch (error) {
         console.log(error);
       }
     })();
+    return () => isMounted = false;
   }, [setUser]);
 
 
@@ -38,13 +40,15 @@ function App() {
         <div className="container">
           <div className="mt-3">
             <Switch>
-              <Route exact path='/' component={Home} />
-              <Route exact path='/signin' component={SignIn} />
-              <Route exact path='/signup' component={SignUp} />
-              <Route path='/settings' component={Settings} />
-              <Route path='/register/gpa' component={RegisterGPA} />
-              <Route path='/:username' component={Dashboard} />
-              <Route component={NoMatch} />
+              <Route path="/" exact component={Home} />
+              <Route path="/not_found" component={NoMatch} />
+              {
+                user ? (
+                  <SignedRoutes />
+                ) : (
+                    <UnsignedRoutes />
+                  )
+              }
             </Switch>
           </div>
         </div>
