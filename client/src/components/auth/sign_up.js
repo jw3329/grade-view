@@ -17,15 +17,17 @@ const SignUp = () => {
     const [majors, setMajors] = useState([]);
 
     useEffect(() => {
+        let isMounted = true;
         axios.get(`${SERVER}/auth/majors`)
             .then(res => res.data)
             .then(({ status, majors }) => {
                 if (!status) throw new Error('Something wrong getting majors');
-                setMajors([...majors]);
+                isMounted && setMajors([...majors]);
             })
             .catch(error => {
                 console.log(error);
             });
+        return () => isMounted = false;
     }, []);
 
     const handleSubmit = async e => {

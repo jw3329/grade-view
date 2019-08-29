@@ -15,18 +15,22 @@ const RegisterGPA = () => {
     });
 
     useEffect(() => {
+        let isMounted = true;
         axios.get(`${SERVER}/auth/majors`)
             .then(res => res.data)
             .then(({ majors }) => {
-                setMajors([...majors.filter(major => major !== 'UNDECLARED')]);
-                setRegisterData(registerData => ({
-                    ...registerData,
-                    course: majors[1]
-                }));
+                if (isMounted) {
+                    setMajors([...majors.filter(major => major !== 'UNDECLARED')]);
+                    setRegisterData(registerData => ({
+                        ...registerData,
+                        course: majors[1]
+                    }));
+                }
             })
             .catch(error => {
                 console.log(error);
             });
+        return () => isMounted = false;
     }, []);
 
     const handleSubmit = async e => {

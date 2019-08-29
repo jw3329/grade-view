@@ -1,25 +1,23 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import Axios from 'axios';
 import { SERVER } from '../../config';
-import { withRouter } from 'react-router-dom';
 
-const Signed = ({ user, history }) => {
+const Signed = ({ user }) => {
 
     const [gpas, setGpas] = useState([]);
 
     useEffect(() => {
+        let isMounted = true;
         if (user) {
             Axios.post(`${SERVER}/api/gpa`, { user })
                 .then(res => res.data)
-                .then(({ status, info }) => {
-                    if (!status) {
-                        history.push('/not_found');
-                        return;
-                    }
-                    setGpas(info.reverse().map(({ course, course_number, gpa }, index) => <Fragment key={index}>{createCard(course, course_number, gpa)}</Fragment>));
-                });
+                .then(({ status, message, info }) => {
+                    if (!status) throw new Error(message);
+                    isMounted && setGpas(info.reverse().map(({ course, course_number, gpa }, index) => <Fragment key={index}>{createCard(course, course_number, gpa)}</Fragment>));
+                }).catch(err => console.log(err));
         }
-    }, [user, history]);
+        return () => isMounted = false;
+    }, [user]);
 
     const createCard = (course, courseNumber, gpa) => (
         <div className="card mt-3">
@@ -45,4 +43,4 @@ const Signed = ({ user, history }) => {
     );
 }
 
-export default withRouter(Signed);
+export default Signed;
