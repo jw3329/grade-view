@@ -39,6 +39,18 @@ const Signed = ({ user }) => {
                     </div>
                 </div>
             </div>
+            <div className="offset-sm-1 col-sm-6">
+                <div className="card">
+                    <div className="card-body">
+                        <h1 className="text-center">Profile</h1>
+                        {user.first_name && user.last_name && <p>Name: {`${user.first_name} ${user.last_name}`}</p>}
+                        {user.bio && <p>Bio: {user.bio}</p>}
+                        {user.url && <p>URL: {user.url}</p>}
+                        {user.company && <p>Company: {user.company}</p>}
+                        {user.location && <p>Location: {user.location}</p>}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

@@ -14,20 +14,16 @@ const Profile = () => {
         e.preventDefault();
         setMessage('');
         setStatus(null);
-        console.log(e.target.profile_image.files[0])
         const formData = new FormData();
         formData.append('profile_image', e.target.profile_image.files[0]);
         try {
-            const profileData = (await axios.put(`${SERVER}/settings/profile`, userData)).data;
-            if (!profileData.status) throw new Error(profileData.message);
+            const { status, message, user } = (await axios.put(`${SERVER}/settings/profile`, userData)).data;
+            setStatus(status);
+            setMessage(message);
+            if (!status) throw new Error(message);
             await axios.post(`${SERVER}/settings/profile_image`, formData)
-            // if (!profileImageData.status) throw new Error(profileImageData.message);
             setUser(user);
-            setStatus(true)
-            setMessage(profileData.message);
         } catch (error) {
-            setStatus(false);
-            setMessage(error.message);
             console.log(error);
         }
     }
@@ -53,11 +49,11 @@ const Profile = () => {
                 <div className="col-sm-7">
                     <div className="form-group">
                         <label htmlFor="first_name">First name</label>
-                        <input type="text" className="form-control" id="first_name" placeholder="First name" required defaultValue={userData.first_name} />
+                        <input type="text" className="form-control" id="first_name" placeholder="First name" defaultValue={userData.first_name} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="last_name">Last name</label>
-                        <input type="text" className="form-control" id="last_name" placeholder="Last name" required defaultValue={userData.last_name} />
+                        <input type="text" className="form-control" id="last_name" placeholder="Last name" defaultValue={userData.last_name} />
                     </div>
                     <label htmlFor="bio">Bio</label>
                     <textarea className="form-control" id='bio' placeholder="Enter bio" defaultValue={userData.bio} />
