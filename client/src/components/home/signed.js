@@ -43,6 +43,7 @@ const Signed = ({ user }) => {
                 <div className="card">
                     <div className="card-body">
                         <h1 className="text-center">Profile</h1>
+                        {user.profile_image && <img src={`${SERVER}/api/profile_image/${user.profile_image}`} alt="" className="w-100" />}
                         {user.first_name && user.last_name && <p>Name: {`${user.first_name} ${user.last_name}`}</p>}
                         {user.bio && <p>Bio: {user.bio}</p>}
                         {user.url && <p>URL: {user.url}</p>}
