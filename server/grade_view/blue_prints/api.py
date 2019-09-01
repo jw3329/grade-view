@@ -1,6 +1,7 @@
-from flask import Blueprint, request, jsonify
-from grade_view import db, app
+from flask import Blueprint, request, jsonify,send_file
+from grade_view import db, app, UPLOAD_FOLDER
 from grade_view.models import User, GPA, UserSchema
+import os
 
 api = Blueprint('api', __name__)
 
@@ -44,5 +45,23 @@ def api_find_user():
         status = False
         message = str(e)
         return jsonify({'stauts':status, 'message':message})
+
+
+@api.route('/profile_image/<filename>',methods=['GET'])
+def api_profile_image(filename):
+    target = f'{UPLOAD_FOLDER}/profile_images'
+    if not os.path.isdir(target):
+        os.mkdir(target)
+    if request.method == 'GET':
+        try:
+            sending_file = os.path.abspath(f'{target}/{filename}')
+            return send_file(sending_file,mimetype='image/jpg')
+        except Exception as e:
+            status = False
+            message = str(e)
+        return jsonify({
+            'status':status,
+            'message': message
+        })
 
 app.register_blueprint(api, url_prefix='/api')
