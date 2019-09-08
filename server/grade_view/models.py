@@ -23,7 +23,6 @@ class User(db.Model,UserMixin):
     url = db.Column(db.String(50),nullable=False, default='')
     company = db.Column(db.String(30), nullable=False, default='')
     location = db.Column(db.String(30), nullable=False, default='')
-
     created_date = db.Column(db.DateTime,
                              nullable=False,
                              default=datetime.utcnow)
@@ -140,3 +139,18 @@ class ProfessorCourses(db.Model):
 
     def __repr__(self):
         return f'<ProfessorCourses {self.professor_id}, {self.course_id}>'
+
+
+
+class Follow(db.Model):
+    __tablename__ = 'follow'
+    id = db.Column(db.Integer, primary_key=True)
+    source_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    destination_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def __init__(self, source_id, destination_id):
+        self.source_id = source_id
+        self.destination_id = destination_id
+
+    def __repr__(self):
+        return f'<Follow {self.source_id}, {self.destination_id}>'
