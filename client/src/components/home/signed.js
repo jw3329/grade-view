@@ -1,23 +1,54 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState, Fragment, useContext } from 'react';
 import Axios from 'axios';
 import { SERVER } from '../../config';
+import AuthContext from '../../contexts/auth_context';
+
 
 const Signed = ({ user }) => {
 
+    const { user: currentUser } = useContext(AuthContext);
     const [gpas, setGpas] = useState([]);
+    const [following, setFollowing] = useState(false);
+    const [followers, setFollowers] = useState([]);
+    const [followingUsers, setFollowingUsers] = useState([]);
 
     useEffect(() => {
         let isMounted = true;
-        if (user) {
-            Axios.post(`${SERVER}/api/gpa`, { user })
-                .then(res => res.data)
-                .then(({ status, message, info }) => {
+        try {
+            if (user) {
+                Axios.post(`${SERVER}/api/gpa`, { user })
+                    .then(res => res.data)
+                    .then(({ status, message, info }) => {
+                        if (!status) throw new Error(message);
+                        isMounted && setGpas(info.reverse().map(({ course, course_number, gpa }, index) => <Fragment key={index}>{createCard(course, course_number, gpa)}</Fragment>));
+                    });
+                Axios.post(`${SERVER}/api/get_followers`, {
+                    'username': user.username
+                }).then(res => res.data).then(({ status, followers, message }) => {
                     if (!status) throw new Error(message);
-                    isMounted && setGpas(info.reverse().map(({ course, course_number, gpa }, index) => <Fragment key={index}>{createCard(course, course_number, gpa)}</Fragment>));
-                }).catch(err => console.log(err));
+                    isMounted && setFollowers([...followers]);
+                });
+                Axios.post(`${SERVER}/api/get_following_users`, {
+                    'username': user.username
+                }).then(res => res.data).then(({ status, following_users, message }) => {
+                    if (!status) throw new Error(message);
+                    isMounted && setFollowingUsers([...following_users]);
+                });
+            }
+        } catch (error) {
+            console.log(error);
         }
         return () => isMounted = false;
     }, [user]);
+
+    useEffect(() => {
+        if (followers.includes(currentUser.username)) {
+            setFollowing(true);
+        } else {
+            setFollowing(false);
+        }
+    }, [followers, currentUser]);
+
 
     const createCard = (course, courseNumber, gpa) => (
         <div className="card mt-3">
@@ -29,30 +60,75 @@ const Signed = ({ user }) => {
         </div>
     )
 
+    const handleFollow = async () => {
+        try {
+            const { status, message } = (await Axios.post(`${SERVER}/api/follow`, {
+                'destination_username': user.username
+            })).data;
+            if (!status) throw new Error(message);
+            setFollowing(!following);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
-        <div className="row">
-            <div className="col-sm-5">
-                <div className="card">
-                    <div className="card-body">
-                        <h1 className="text-center">Registered GPA</h1>
-                        {gpas}
+        <Fragment>
+            <div className="d-block p-2">
+                <div className="d-flex justify-content-end">
+                    {
+                        currentUser.username !== user.username && (
+                            following ? (
+                                <button onClick={handleFollow} className="btn btn-light">Unfollow</button>
+                            ) : (
+                                    <button onClick={handleFollow} className="btn btn-primary">Follow</button>
+                                )
+                        )
+                    }
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-sm-4">
+                    <div className="card">
+                        <div className="card-body">
+                            <h1 className="text-center">Registered GPA</h1>
+                            {gpas}
+                        </div>
+                    </div>
+                </div>
+                <div className="col-sm-4">
+                    <div className="card">
+                        <div className="card-body">
+                            <h1 className="text-center">Profile</h1>
+                            {user.profile_image && <img src={`${SERVER}/api/profile_image/${user.profile_image}`} alt="" className="w-100" />}
+                            {user.username && <p>Username: {`${user.username}`}</p>}
+                            {user.first_name && user.last_name && <p>Name: {`${user.first_name} ${user.last_name}`}</p>}
+                            {user.bio && <p>Bio: {user.bio}</p>}
+                            {user.url && <p>URL: {user.url}</p>}
+                            {user.company && <p>Company: {user.company}</p>}
+                            {user.location && <p>Location: {user.location}</p>}
+                        </div>
+                    </div>
+                </div>
+                <div className="col-sm-4">
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <div className="card">
+                                <div className="card-body">Followers</div>
+                                <p>{followers}</p>
+                            </div>
+                        </div>
+                        <div className="col-sm-6">
+                            <div className="card">
+                                <div className="card-body">Following</div>
+                                <p>{followingUsers}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div className="offset-sm-1 col-sm-6">
-                <div className="card">
-                    <div className="card-body">
-                        <h1 className="text-center">Profile</h1>
-                        {user.profile_image && <img src={`${SERVER}/api/profile_image/${user.profile_image}`} alt="" className="w-100" />}
-                        {user.first_name && user.last_name && <p>Name: {`${user.first_name} ${user.last_name}`}</p>}
-                        {user.bio && <p>Bio: {user.bio}</p>}
-                        {user.url && <p>URL: {user.url}</p>}
-                        {user.company && <p>Company: {user.company}</p>}
-                        {user.location && <p>Location: {user.location}</p>}
-                    </div>
-                </div>
-            </div>
-        </div>
+        </Fragment>
     );
 }
 

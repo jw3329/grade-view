@@ -38,19 +38,17 @@ function App() {
       <div className="App">
         <Navbar />
         <div className="container">
-          <div className="mt-3">
-            <Switch>
-              <Route path="/" exact component={Home} />
-              <Route path="/not_found" component={NoMatch} />
-              {
-                user ? (
-                  <SignedRoutes />
-                ) : (
-                    <UnsignedRoutes />
-                  )
-              }
-            </Switch>
-          </div>
+          <Switch>
+            <Route path="/" exact component={Home} />
+            <Route path="/not_found" component={NoMatch} />
+            {
+              user ? (
+                <SignedRoutes />
+              ) : (
+                  <UnsignedRoutes />
+                )
+            }
+          </Switch>
         </div>
       </div>
     </Router>
