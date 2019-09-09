@@ -2,6 +2,7 @@ import React, { useEffect, useState, Fragment, useContext } from 'react';
 import Axios from 'axios';
 import { SERVER } from '../../config';
 import AuthContext from '../../contexts/auth_context';
+import { Link } from 'react-router-dom';
 
 
 const Signed = ({ user }) => {
@@ -66,11 +67,20 @@ const Signed = ({ user }) => {
                 'destination_username': user.username
             })).data;
             if (!status) throw new Error(message);
+            // if the user was following, unfollow the user
+            if (following) {
+                setFollowers(followers => followers.filter(follower => follower !== currentUser.username));
+            } else {
+                // include current username
+                setFollowers(followers => [...followers, currentUser.username]);
+            }
             setFollowing(!following);
         } catch (error) {
             console.log(error);
         }
     }
+
+    const createLink = username => <Link key={username} to={`/${username}`}>{username}</Link>
 
     return (
         <Fragment>
@@ -116,13 +126,17 @@ const Signed = ({ user }) => {
                         <div className="col-sm-6">
                             <div className="card">
                                 <div className="card-body">Followers</div>
-                                <p>{followers}</p>
+                                <div className="text-center">
+                                    <p>{followers.map(follower => createLink(follower))}</p>
+                                </div>
                             </div>
                         </div>
                         <div className="col-sm-6">
                             <div className="card">
                                 <div className="card-body">Following</div>
-                                <p>{followingUsers}</p>
+                                <div className="text-center">
+                                    <p>{followingUsers.map(followingUser => createLink(followingUser))}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
